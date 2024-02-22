@@ -34,7 +34,14 @@ services:
       - postgres
     networks:
       - keycloak-postgres-network
-      
+  
+  thundera:
+    container_name: thundera-inst
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
 networks:
   keycloak-postgres-network:
     driver: bridge
