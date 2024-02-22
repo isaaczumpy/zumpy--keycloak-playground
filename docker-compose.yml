@@ -4,7 +4,6 @@ services:
   postgres:
     image: postgres:latest
     container_name: thundera-keycloak-db-inst
-    restart: always
     ports:
       - "5432:5432"
     environment:
@@ -22,7 +21,6 @@ services:
     env_file:
       - ./.env
     volumes:
-      #      - ./docker/keycloak/realms:/tmp/realms
       - ./src/main/resources:/tmp/realms
     command:
       - "-Dkeycloak.migration.action=import"
@@ -32,12 +30,11 @@ services:
     entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]
     ports:
       - "8180:8080"
-    restart: always
     depends_on:
       - postgres
     networks:
       - keycloak-postgres-network
-
+      
 networks:
   keycloak-postgres-network:
     driver: bridge
