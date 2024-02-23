@@ -23,11 +23,11 @@ services:
       - ./.env
     volumes:
       - ./src/main/resources:/tmp/realms
-#    command:
-#      - "-Dkeycloak.migration.action=import"
-#      - "-Dkeycloak.migration.provider=singleFile"
-#      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
-#      - "-Dkeycloak.migration.file=/tmp/realms/thundera-realm-import.json"
+    command:
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=singleFile"
+      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+      - "-Dkeycloak.migration.file=/tmp/realms/thundera-realm-import.json"
     entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]
     ports:
       - "8081:8080"

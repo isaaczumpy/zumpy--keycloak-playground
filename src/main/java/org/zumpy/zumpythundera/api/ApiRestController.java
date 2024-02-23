@@ -1,79 +1,81 @@
 package org.zumpy.zumpythundera.api;
 
+
+import lombok.Builder;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ApiRestController {
 
-    private HashMap<String, Object> createResponse(String message, List<String> userRoles, String requiredRole) {
+    @Data
+    @Builder
+    public static class Order {
+        private UUID id;
+        private Float price;
+    }
+
+    private ResponseEntity<HashMap<String, Object>> createResponse(HttpStatus status, String message, Object data) {
         HashMap<String, Object> response = new HashMap<>();
         response.put("message", message);
-        response.put("userRoles", userRoles);
-        response.put("requiredRole", requiredRole);
-        return response;
+        if (data != null) response.put("data", data);
+        return new ResponseEntity<>(response, status);
     }
 
-    private HashMap<String, Object> createResponse(String message) {
-        return createResponse(message, null, null);
+    private final HashMap<UUID, Order> orders = new HashMap<>();
+
+    private Order createOrder(Float price) {
+        UUID id = UUID.randomUUID();
+        Order order = Order.builder().id(id).price(price).build();
+        orders.put(id, order);
+        return order;
     }
 
-
-    @SuppressWarnings("unchecked")
-    private List<String>  extractResourceRoles(Jwt jwt) {
-        Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-        if (resourceAccess == null) return Collections.emptyList();
-
-        Set<GrantedAuthority> roles = new HashSet<>();
-        resourceAccess.forEach((resourceName, value) -> {
-            Map<String, Object> resource = (Map<String, Object>) value;
-
-            if (resource != null && resource.containsKey("roles")) {
-                Collection<String> resourceRoles = (Collection<String>) resource.get("roles");
-                roles.addAll(resourceRoles
-                        .stream()
-                        .map(role -> new SimpleGrantedAuthority(String.format("ROLE_%s", role)))
-                        .collect(Collectors.toSet()));
-            }
-        });
-
-        log.debug("Resource roles: {}", roles);
-        return roles.stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+    @GetMapping("/public/ping")
+    public ResponseEntity<HashMap<String, Object>> pingEndpoint() {
+        return createResponse(HttpStatus.OK, "Pong", null);
     }
 
-    @GetMapping("/public")
-    public HashMap<String, Object> publicEndpoint() {
-        return createResponse("Hello, World!");
+    @PostMapping("/orders")
+    @PreAuthorize("hasRole('CREATE_ORDER')")
+    public ResponseEntity<HashMap<String, Object>> createOrderEndpoint(@RequestBody Map<String, Float> requestBody) {
+        Float price = requestBody.get("price");
+        if (price == null) return createResponse(HttpStatus.BAD_REQUEST, "Price is required", null);
+        Order order = createOrder(price);
+        return createResponse(HttpStatus.CREATED, "Order created", order);
     }
 
-    @GetMapping("/")
-    @PreAuthorize("hasRole('CLIENT_USER')")
-    public HashMap<String, Object> userEndpoint(@AuthenticationPrincipal Jwt jwt) {
-        String username = jwt.getClaimAsString("preferred_username");
-        List<String> userRoles = extractResourceRoles(jwt);
-        return createResponse(String.format("Hello, %s!", username), userRoles, "CLIENT_USER");
+    @GetMapping("/orders")
+    @PreAuthorize("hasRole('VIEW_ORDER')")
+    public ResponseEntity<HashMap<String, Object>> getOrdersEndpoint() {
+        List<Order> orderList = new ArrayList<>(this.orders.values());
+        return createResponse(HttpStatus.OK, "Orders retrieved", orderList);
     }
 
-    @GetMapping("/admin")
-    @PreAuthorize("hasRole('CLIENT_ADMIN')")
-    public HashMap<String, Object> adminEndpoint(@AuthenticationPrincipal Jwt jwt) {
-        String username = jwt.getClaimAsString("preferred_username");
-        List<String> userRoles = extractResourceRoles(jwt);
-        return createResponse(String.format("Hello, %s!", username), userRoles, "CLIENT_ADMIN");
+    @GetMapping("/orders/{id}")
+    @PreAuthorize("hasRole('VIEW_ORDER')")
+    public ResponseEntity<HashMap<String, Object>> getOrderByIdEndpoint(@PathVariable UUID id) {
+        Order order = orders.get(id);
+        if (order == null) return createResponse(HttpStatus.NOT_FOUND, "Order not found", null);
+        return createResponse(HttpStatus.OK, "Order retrieved", order);
     }
+
+    @DeleteMapping("/orders/{id}")
+    @PreAuthorize("hasRole('DELETE_ORDER')")
+    public ResponseEntity<HashMap<String, Object>> deleteOrdersEndpoint(@PathVariable UUID id) {
+        Order order = orders.remove(id);
+        if (order == null) return createResponse(HttpStatus.NOT_FOUND, "Order not found", null);
+        return createResponse(HttpStatus.OK, "Order deleted", order);
+    }
+
 }

@@ -318,10 +318,21 @@
       ],
       "security-admin-console": [],
       "admin-cli": [],
+      "test-client": [
+        {
+          "id": "8f4404ec-a8a2-4ace-bafa-3fab294c4ce9",
+          "name": "TEST_CLIENT_ROLE",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "beb7c2be-b8a7-45a6-9c7f-901f89b775f8",
+          "attributes": {}
+        }
+      ],
       "thundera-api": [
         {
-          "id": "702bdae1-e54d-4d22-aeae-d567f852f508",
-          "name": "VIEW_ORDERS",
+          "id": "42b51ec2-e8a1-40a4-8eb9-9259408dfecd",
+          "name": "CREATE_ORDER",
           "description": "",
           "composite": false,
           "clientRole": true,
@@ -329,8 +340,8 @@
           "attributes": {}
         },
         {
-          "id": "1ec64e46-415b-43c0-914b-328f3106b0fb",
-          "name": "CLIENT_USER",
+          "id": "d0b28d2b-1ab5-4c7d-9431-e30853e1834f",
+          "name": "VIEW_ORDER",
           "description": "",
           "composite": false,
           "clientRole": true,
@@ -338,8 +349,8 @@
           "attributes": {}
         },
         {
-          "id": "cade09a0-83f7-4030-89cb-b3a9628d7344",
-          "name": "CLIENT_ADMIN",
+          "id": "8b0e124a-6e28-4704-8a11-0b2d73e8b4b5",
+          "name": "DELETE_ORDER",
           "description": "",
           "composite": false,
           "clientRole": true,
@@ -449,22 +460,7 @@
       ]
     }
   },
-  "groups": [
-    {
-      "id": "79f56503-8b10-4cf9-8de6-64f56bf38634",
-      "name": "TESTING_GROUP",
-      "path": "/TESTING_GROUP",
-      "subGroups": [],
-      "attributes": {},
-      "realmRoles": [],
-      "clientRoles": {
-        "thundera-api": [
-          "CLIENT_USER",
-          "CLIENT_ADMIN"
-        ]
-      }
-    }
-  ],
+  "groups": [],
   "defaultRole": {
     "id": "9cef887f-a700-4cb0-b7b9-3b1e67ed88f5",
     "name": "default-roles-thundera",
@@ -515,6 +511,24 @@
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
   "webAuthnPolicyPasswordlessExtraOrigins": [],
+  "users": [
+    {
+      "id": "27c79391-93ff-4784-b96b-ce1717c9c5c3",
+      "createdTimestamp": 1708696115290,
+      "username": "service-account-thundera-api",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "serviceAccountClientId": "thundera-api",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-thundera"
+      ],
+      "notBefore": 0,
+      "groups": []
+    }
+  ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
@@ -814,22 +828,22 @@
       ]
     },
     {
-      "id": "d3031198-aa3c-486b-9efc-0167e6991cb7",
-      "clientId": "thundera-api",
-      "name": "Thundera API",
-      "description": "Client for manage Thundera API.",
-      "rootUrl": "http://localhost:8080",
-      "adminUrl": "http://localhost:8080",
-      "baseUrl": "http://localhost:8080",
+      "id": "beb7c2be-b8a7-45a6-9c7f-901f89b775f8",
+      "clientId": "test-client",
+      "name": "",
+      "description": "",
+      "rootUrl": "",
+      "adminUrl": "",
+      "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:8080/*"
+        "/*"
       ],
       "webOrigins": [
-        "*"
+        "/*"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -843,6 +857,59 @@
       "protocol": "openid-connect",
       "attributes": {
         "oidc.ciba.grant.enabled": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.session.required": "true",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "id": "d3031198-aa3c-486b-9efc-0167e6991cb7",
+      "clientId": "thundera-api",
+      "name": "Thundera API",
+      "description": "Client for manage Thundera API.",
+      "rootUrl": "http://localhost:8080",
+      "adminUrl": "http://localhost:8080",
+      "baseUrl": "http://localhost:8080",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "**********",
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "*"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1708695967",
         "backchannel.logout.session.required": "true",
         "post.logout.redirect.uris": "http://localhost:8080",
         "display.on.consent.screen": "false",
@@ -852,6 +919,53 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "fa36e47b-e27c-4e2f-a0d0-f70c6bb43046",
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "client_id",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "client_id",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "fa62045f-99db-467c-990d-6a4ac59cdd03",
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "d58d2abb-a746-477c-9b54-8e65cb98d12e",
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "introspection.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "web-origins",
         "acr",

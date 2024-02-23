@@ -31,7 +31,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((auth) -> {
-            auth.requestMatchers(String.format("%s/public", BASE_PATH)).permitAll();
+            auth.requestMatchers(String.format("%s/public/**", BASE_PATH)).permitAll();
             auth.anyRequest().authenticated();
         });
         http.oauth2ResourceServer((oauth2) -> oauth2.jwt(

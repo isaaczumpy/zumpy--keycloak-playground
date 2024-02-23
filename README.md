@@ -31,8 +31,6 @@ be granted.
 
 - Keycloak: http://localhost:8081
 - Spring Boot: http://localhost:8080
-    - http://localhost:8080/ - can be invoked by any authenticated user
-    - http://localhost:8080/admin - can be invoked by users with the `user_premium` role
 
 ## Docs
 
