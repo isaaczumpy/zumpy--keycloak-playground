@@ -9,5 +9,4 @@ spring:
 jwt:
   auth:
     converter:
-      resource-id: thundera-api
       principle-attribute: preferred_username

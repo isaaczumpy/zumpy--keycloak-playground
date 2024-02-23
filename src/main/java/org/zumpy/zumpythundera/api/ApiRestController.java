@@ -18,7 +18,7 @@ public class ApiRestController {
     @GetMapping("/")
     @PreAuthorize("hasRole('CLIENT_USER')")
     public String index(@AuthenticationPrincipal Jwt jwt) {
-        return String.format("ORDERS // Hello, %s!", jwt.getClaimAsString("preferred_username"));
+        return String.format("Hello, %s!", jwt.getClaimAsString("preferred_username"));
     }
 
     @GetMapping("/admin")

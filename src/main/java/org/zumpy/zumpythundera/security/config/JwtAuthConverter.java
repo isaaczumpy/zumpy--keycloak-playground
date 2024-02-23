@@ -30,9 +30,6 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
     @Value("${jwt.auth.converter.principle-attribute:}")
     private String principleAttribute;
 
-    @Value("${jwt.auth.converter.resource-id:}")
-    private String resourceId;
-
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         Collection<GrantedAuthority> authorities = Stream.concat(
@@ -56,15 +53,21 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         Map<String, Object> resourceAccess = jwt.getClaim(RESOURCE_ACCESS_CLAIM);
         if (resourceAccess == null) return Collections.emptySet();
 
-        Map<String, Object> resource = (Map<String, Object>) resourceAccess.get(resourceId);
-        if (resource == null) return Collections.emptySet();
+        Set<GrantedAuthority> roles = new HashSet<>();
 
-        Collection<String> resourceRoles = (Collection<String>) resource.get(ROLES_CLAIM);
-        if (resourceRoles == null) return Collections.emptySet();
+        resourceAccess.forEach((resourceName, value) -> {
+            Map<String, Object> resource = (Map<String, Object>) value;
 
-        return resourceRoles
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(String.format("ROLE_%s", role)))
-                .collect(Collectors.toSet());
+            if (resource != null && resource.containsKey(ROLES_CLAIM)) {
+                Collection<String> resourceRoles = (Collection<String>) resource.get(ROLES_CLAIM);
+                roles.addAll(resourceRoles
+                        .stream()
+                        .map(role -> new SimpleGrantedAuthority(String.format("ROLE_%s", role)))
+                        .collect(Collectors.toSet()));
+            }
+        });
+
+        log.debug("Resource roles: {}", roles);
+        return roles;
     }
 }
