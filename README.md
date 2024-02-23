@@ -15,15 +15,17 @@ be granted.
      cp .env.example .env
     ```
 
-2. Run `docker-compose.yml` file to start Keycloak server and Postgres databse
+2. Update the `.env` file
+
+3. Run `docker-compose.yml` file to start Keycloak server and Postgres databse
 
       ```bash
        docker-compose up
       ```
 
-3. Run the spring boot application
+4. Run the spring boot application
 
-4. Import `insomnia.json` file to open the requests in Insomnia
+5.Import `insomnia.json` file to open the requests in Insomnia
 
 ## Urls
 

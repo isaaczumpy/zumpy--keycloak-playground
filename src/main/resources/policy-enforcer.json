@@ -1,8 +1,0 @@
-{
-  "realm": "thundera",
-  "auth-server-url": "http://localhost:8180",
-  "resource": "thundera-auth",
-  "credentials": {
-    "secret": "yBIKek2ZTensp6qhrrZoc1DFZ4OZNubU"
-  }
-}

@@ -12,6 +12,7 @@ services:
       POSTGRES_DB: thundera-keycloak-db
     volumes:
       - ./docker/postgres:/var/lib/postgresql/data
+      - ${DOCKER_VOLUME_PATH}/thundera-keycloak/postgres:/var/lib/postgresql/data
     networks:
       - keycloak-postgres-network
 
@@ -22,11 +23,11 @@ services:
       - ./.env
     volumes:
       - ./src/main/resources:/tmp/realms
-    command:
-      - "-Dkeycloak.migration.action=import"
-      - "-Dkeycloak.migration.provider=singleFile"
-      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
-      - "-Dkeycloak.migration.file=/tmp/realms/thundera-realm-import.json"
+#    command:
+#      - "-Dkeycloak.migration.action=import"
+#      - "-Dkeycloak.migration.provider=singleFile"
+#      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+#      - "-Dkeycloak.migration.file=/tmp/realms/thundera-realm-import.json"
     entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]
     ports:
       - "8180:8080"
@@ -35,13 +36,13 @@ services:
     networks:
       - keycloak-postgres-network
   
-  thundera:
-    container_name: thundera-inst
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    ports:
-      - 8080:8080
+#  thundera:
+#    container_name: thundera-inst
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8080:8080
 networks:
   keycloak-postgres-network:
     driver: bridge
