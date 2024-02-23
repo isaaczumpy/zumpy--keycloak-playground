@@ -2,6 +2,8 @@ package org.zumpy.zumpythundera.security.config;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,7 +19,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfiguration {
+
+    @Value("${api.base-path}")
+    private String BASE_PATH;
 
     private final JwtAuthConverter jwtAuthConverter;
 
@@ -25,7 +31,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((auth) -> {
-            auth.requestMatchers("/public").permitAll();
+            auth.requestMatchers(String.format("%s/public", BASE_PATH)).permitAll();
             auth.anyRequest().authenticated();
         });
         http.oauth2ResourceServer((oauth2) -> oauth2.jwt(

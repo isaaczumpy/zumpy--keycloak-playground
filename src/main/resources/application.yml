@@ -10,3 +10,7 @@ jwt:
   auth:
     converter:
       principle-attribute: preferred_username
+
+api:
+  version: 1
+  base-path: /api/v${api.version}
