@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 @Slf4j
 @RestController
-@RequestMapping
+@RequestMapping("/api/v1")
 public class ApiRestController {
 
     @GetMapping("/")
