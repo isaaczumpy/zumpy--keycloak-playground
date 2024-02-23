@@ -27,4 +27,3 @@ public class ApiRestController {
         return String.format("Hello, %s!", jwt.getClaimAsString("preferred_username"));
     }
 }
-
