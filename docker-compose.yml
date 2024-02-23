@@ -30,7 +30,7 @@ services:
 #      - "-Dkeycloak.migration.file=/tmp/realms/thundera-realm-import.json"
     entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]
     ports:
-      - "8180:8080"
+      - "8081:8080"
     depends_on:
       - postgres
     networks:

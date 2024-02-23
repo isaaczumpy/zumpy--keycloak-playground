@@ -3,5 +3,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8180/realms/thundera
+          issuer-uri: http://localhost:8081/realms/thundera
           jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+jwt:
+  auth:
+    converter:
+      resource-id: thundera-api
+      principle-attribute: preferred_username
